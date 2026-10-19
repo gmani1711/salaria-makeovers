@@ -1176,12 +1176,12 @@ function Website({state,onNewBooking}){
         .nl:hover,.nl.on{color:${G};}
 
         /* BUTTONS */
-        .gbtn{font-family:'Outfit',sans-serif;font-size:11px;letter-spacing:2.5px;text-transform:uppercase;padding:14px 34px;background:${G};color:${D};border:1px solid ${G};cursor:pointer;transition:all .4s cubic-bezier(.16,1,.3,1);font-weight:600;position:relative;overflow:hidden;}
+        .gbtn{font-family:'Outfit',sans-serif;font-size:11px;letter-spacing:2.5px;text-transform:uppercase;padding:14px 34px;min-height:48px;background:${G};color:${D};border:1px solid ${G};cursor:pointer;transition:all .4s cubic-bezier(.16,1,.3,1);font-weight:600;position:relative;overflow:hidden;}
         .gbtn::after{content:'';position:absolute;top:0;left:-100%;width:100%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.2),transparent);transition:left .5s;}
         .gbtn:hover::after{left:110%;}
         .gbtn:hover{background:${CR};border-color:${CR};transform:translateY(-2px);box-shadow:0 14px 36px rgba(201,169,110,.28);}
         .gbtn:disabled{opacity:.4;pointer-events:none;}
-        .obtn{font-family:'Outfit',sans-serif;font-size:11px;letter-spacing:2.5px;text-transform:uppercase;padding:14px 34px;background:transparent;color:${G};border:1px solid ${G};cursor:pointer;transition:all .4s;position:relative;overflow:hidden;z-index:0;}
+        .obtn{font-family:'Outfit',sans-serif;font-size:11px;letter-spacing:2.5px;text-transform:uppercase;padding:14px 34px;min-height:48px;background:transparent;color:${G};border:1px solid ${G};cursor:pointer;transition:all .4s;position:relative;overflow:hidden;z-index:0;}
         .obtn::before{content:'';position:absolute;inset:0;background:${G};transform:scaleX(0);transform-origin:left;transition:transform .4s cubic-bezier(.16,1,.3,1);z-index:-1;}
         .obtn:hover::before{transform:scaleX(1);}
         .obtn:hover{color:${D};}
@@ -1192,6 +1192,13 @@ function Website({state,onNewBooking}){
         .bi::placeholder{color:rgba(250,246,240,.22);}
         select.bi option{background:${DC};}
         textarea.bi{resize:vertical;}
+
+        /* STICKY MOBILE BOOKING BAR */
+        .mob-bar{display:none;}
+        @media(max-width:640px){
+          .mob-bar{display:block;position:fixed;left:0;right:0;bottom:0;z-index:9980;padding:10px 16px calc(10px + env(safe-area-inset-bottom));background:${D};border-top:1px solid rgba(201,169,110,.15);}
+          footer{padding-bottom:84px!important;}
+        }
 
         /* SERVICE CARDS */
         .sc{background:${DC};border:1px solid rgba(201,169,110,.08);padding:30px 24px;position:relative;overflow:hidden;transition:all .5s cubic-bezier(.16,1,.3,1);}
@@ -1319,7 +1326,7 @@ function Website({state,onNewBooking}){
             {fp.map((item,i)=>(
               <Fade key={item.id} delay={i*.06}>
                 <div className="pi">
-                  {item.imageUrl?<img src={item.imageUrl} alt={item.label}/>:<div style={{width:"100%",height:"100%",background:item.gradient}}/>}
+                  {item.imageUrl?<img src={item.imageUrl} alt={item.label} loading="lazy"/>:<div style={{width:"100%",height:"100%",background:item.gradient}}/>}
                   <div style={{position:"absolute",inset:0,background:"linear-gradient(to top,rgba(10,10,10,.85),transparent 55%)"}}/>
                   <div style={{position:"absolute",bottom:0,left:0,right:0,padding:"14px 18px"}}><div style={{fontFamily:"'Outfit',sans-serif",fontSize:9,letterSpacing:2,textTransform:"uppercase",color:G}}>{item.category}</div><div style={{fontSize:17,fontWeight:400,marginTop:3}}>{item.label}</div></div>
                   <div className="pcircle">↗</div>
@@ -1386,6 +1393,11 @@ function Website({state,onNewBooking}){
 
       {/* WhatsApp */}
       <a className="wa" href={`https://wa.me/${content.whatsapp||"9915499034"}`} target="_blank" rel="noopener noreferrer" title="Chat on WhatsApp">💬</a>
+
+      {/* Sticky mobile booking bar - only shown on phones, scrolls straight to the booking form */}
+      <div className="mob-bar">
+        <button className="gbtn" style={{width:"100%",minHeight:52}} onClick={()=>goTo("booking")}>Book Now</button>
+      </div>
     </div>
   );
 }

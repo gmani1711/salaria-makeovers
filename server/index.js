@@ -6,13 +6,27 @@ const express = require("express");
 const cors = require("cors");
 const crypto = require("crypto");
 const path = require("path");
-const Database = require("better-sqlite3");
 
 const PORT = process.env.PORT || 4000;
 const DB_PATH = process.env.DB_PATH || path.join(__dirname, "salaria.db");
 const SESSION_TTL_MS = 24 * 60 * 60 * 1000; // 24h
 
-const db = new Database(DB_PATH);
+function createDatabase(filePath) {
+  try {
+    const BetterSqlite3 = require("better-sqlite3");
+    return new BetterSqlite3(filePath);
+  } catch (e) {
+    const { DatabaseSync } = require("node:sqlite");
+    const syncDb = new DatabaseSync(filePath);
+    return {
+      pragma: (str) => syncDb.exec(`PRAGMA ${str}`),
+      exec: (sql) => syncDb.exec(sql),
+      prepare: (sql) => syncDb.prepare(sql),
+    };
+  }
+}
+
+const db = createDatabase(DB_PATH);
 db.pragma("journal_mode = WAL");
 db.exec(`
   CREATE TABLE IF NOT EXISTS state (id INTEGER PRIMARY KEY CHECK (id = 1), data TEXT NOT NULL);
